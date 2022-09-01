@@ -28,7 +28,7 @@ api.interceptors.response.use(
         const { 'nextauth.refreshToken': refreshToken } = cookies
         const originalConfig = error.config
 
-        if (!refreshToken) {
+        if (!isRefreshing) {
           isRefreshing = true
 
           api
