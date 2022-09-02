@@ -1,9 +1,14 @@
 import axios, { AxiosError, HeadersDefaults } from 'axios'
 import { parseCookies, setCookie } from 'nookies'
 
+type failedRequestQueueData = {
+  onSuccess: (token: string) => void
+  onFailure: (error: AxiosError) => void
+}
+
 let cookies = parseCookies()
 let isRefreshing = false
-let failedRequestQueue = []
+let failedRequestQueue: failedRequestQueueData[] = []
 export interface CommonHeaderProperties extends HeadersDefaults {
   Authorization: string
 }
@@ -57,6 +62,7 @@ api.interceptors.response.use(
               } as CommonHeaderProperties
 
               failedRequestQueue.forEach(request => request.onSuccess(token))
+              console.log(failedRequestQueue)
               failedRequestQueue = []
             })
             .catch(err => {
@@ -70,12 +76,12 @@ api.interceptors.response.use(
 
         return new Promise((resolve, reject) => {
           failedRequestQueue.push({
-            onSuccess: (token: string) => {
+            onSuccess: token => {
               originalConfig.headers['Authorization'] = `Bearer ${token}`
 
               resolve(api(originalConfig))
             },
-            onFailure: (error: AxiosError) => {
+            onFailure: error => {
               reject(error)
             }
           })
