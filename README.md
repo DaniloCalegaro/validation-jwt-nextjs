@@ -3,4 +3,4 @@
 
 🚀 Em construção...
 
-Aplicação com conceitos de autenticação por token (JWT).
+Aplicação com conceitos de autenticação por token (JWT)
